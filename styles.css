@@ -1,0 +1,310 @@
+/**
+  Нормализация блочной модели
+ */
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+/**
+  Убираем внутренние отступы слева тегам списков,
+  у которых есть атрибут class
+ */
+:where(ul, ol):where([class]) {
+    padding-left: 0;
+}
+
+/**
+  Убираем внешние отступы body и двум другим тегам,
+  у которых есть атрибут class
+ */
+body,
+:where(blockquote, figure):where([class]) {
+    margin: 0;
+}
+
+/**
+  Убираем внешние отступы вертикали нужным тегам,
+  у которых есть атрибут class
+ */
+:where(
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  ul,
+  ol,
+  dl
+):where([class]) {
+    margin-block: 0;
+}
+
+:where(dd[class]) {
+    margin-left: 0;
+}
+
+:where(fieldset[class]) {
+    margin-left: 0;
+    padding: 0;
+    border: none;
+}
+
+/**
+  Убираем стандартный маркер маркированному списку,
+  у которого есть атрибут class
+ */
+:where(ul[class]) {
+    list-style: none;
+}
+
+:where(address[class]) {
+    font-style: normal;
+}
+
+/**
+  Обнуляем вертикальные внешние отступы параграфа,
+  объявляем локальную переменную для внешнего отступа вниз,
+  чтобы избежать взаимодействие с более сложным селектором
+ */
+p {
+    --paragraphMarginBottom: 24px;
+
+    margin-block: 0;
+}
+
+/**
+  Внешний отступ вниз для параграфа без атрибута class,
+  который расположен не последним среди своих соседних элементов
+ */
+p:where(:not([class]):not(:last-child)) {
+    margin-bottom: var(--paragraphMarginBottom);
+}
+
+
+/**
+  Упрощаем работу с изображениями
+ */
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/**
+  Наследуем свойства шрифт для полей ввода
+ */
+input,
+textarea,
+select,
+button {
+    font: inherit;
+}
+
+html {
+    /**
+      Пригодится в большинстве ситуаций
+      (когда, например, нужно будет "прижать" футер к низу сайта)
+     */
+    height: 100%;
+}
+
+/**
+  Плавный скролл
+ */
+html,
+:has(:target) {
+    scroll-behavior: smooth;
+}
+
+body {
+    /**
+      Пригодится в большинстве ситуаций
+      (когда, например, нужно будет "прижать" футер к низу сайта)
+     */
+    min-height: 100%;
+    /**
+      Унифицированный интерлиньяж
+     */
+    line-height: 1.5;
+}
+
+/**
+  Приводим к единому цвету svg-элементы
+ */
+svg *[fill] {
+    fill: currentColor
+}
+
+svg *[stroke] {
+    stroke: currentColor
+}
+
+/**
+  Чиним баг задержки смены цвета при взаимодействии с svg-элементами
+ */
+svg * {
+    transition-property: fill, stroke;
+}
+
+/**
+  Удаляем все анимации и переходы для людей,
+  которые предпочитают их не использовать
+ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./Fonts/Inter.woff2') format('woff2');
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+:root {
+    --light-dark-color: #0D0714;
+    --purple-color: #1D1825;
+    --pink-color: #9E78CF;
+    --light-green-color: #78CFB0;
+    --grey-color: #777777;
+
+    --border-radius: 10px;
+    --border: 1px solid #9E78CF;
+
+    --main-font: "Inter", sans-serif;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--light-dark-color);
+}
+
+h1, h2, h3 {
+    color: var(--pink-color);
+}
+
+.todo-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45%;
+    height: 90%;
+    background-color: var(--purple-color);
+    text-align: center;
+    padding: 50px;
+    overflow: hidden; /* Убираем прокрутку */
+}
+
+.form-container {
+    display: flex;
+    align-items: center;
+}
+
+.add-new-task-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 20px;
+    padding-bottom: 60px;
+}
+
+#add-new-task-input {
+    width: 360px;
+    height: 40px;
+    background-color: var(--purple-color);
+    border: var(--border);
+    border-radius: var(--border-radius);
+    padding-left: 15px;
+    color: white;
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    background: #9E78CF;
+    width: 40px;
+    color: white;
+    height: 40px;
+}
+
+button:hover {
+    opacity: 0.8;
+    transition-duration: 0.2s;
+}
+
+.tasks-to-do-list, .done-tasks-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#add-new-task-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 15px;
+}
+
+#add-new-task-button svg {
+    display: block;
+    margin: auto;
+}
+
+li {
+    display: flex; /* Используем flexbox для выравнивания */
+    align-items: center; /* Вертикальное выравнивание по центру */
+    position: relative; /* Позволяет кнопкам позиционироваться относительно родительского элемента */
+    font-family: 'Inter', sans-serif;
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap; /* Позволяет переносить текст на новую строку */
+}
+
+.done-button, .delete-button {
+    width: 40px; /* Фиксированная ширина */
+    height: 40px; /* Фиксированная высота */
+    border: none;
+    border-radius: 10px;
+    background: transparent; /* Прозрачный фон */
+    color: var(--pink-color);
+    cursor: pointer; /* Указываем, что кнопка кликабельная */
+}
+
+.done-button {
+    position: absolute; /* Фиксируем кнопку */
+    right: 50px; /* Располагаем кнопку справа с фиксированным отступом */
+}
+
+
+.delete-button {
+    position: absolute; /* Фиксируем кнопку */
+    right: 10px; /* Располагаем кнопку справа с фиксированным отступом */
+}
+
+.task-text {
+    flex-grow: 1; /* Позволяет тексту занимать всё доступное пространство */
+    overflow-wrap: break-word; /* Переносит длинные слова на новую строку */
+    margin-right: 20px; /* Отступ между текстом и кнопками */
+}
+
+.done-button svg, .delete-button svg {
+    display: block;
+    margin: auto;
+}
+
+.button-container {
+    display: flex; /* Устанавливаем flexbox для кнопок */
+    gap: 10px; /* Отступ между кнопками */
+}
