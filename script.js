@@ -34,27 +34,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addTaskToDo(taskText) {
         const li = document.createElement('li');
-        li.textContent = taskText;
+
+        // Создайте элемент для текста задачи
+        const taskTextElement = document.createElement('span');
+        taskTextElement.textContent = taskText;
+        taskTextElement.classList.add('task-text'); // Добавляем класс для текстового элемента
 
         const doneButton = document.createElement('button');
-        doneButton.textContent = '';
-        doneButton.classList.add('done-button');
         doneButton.innerHTML = checkSVG;
+        doneButton.classList.add('done-button');
 
         doneButton.addEventListener('click', () => {
             moveToDone(li);
         });
 
         const deleteButton = document.createElement('button');
-        deleteButton.textContent = ''; // Оставляем пустым, так как будем использовать SVG
-        deleteButton.classList.add('delete-button');
         deleteButton.innerHTML = trashSVG;
+        deleteButton.classList.add('delete-button');
 
         deleteButton.addEventListener('click', () => {
             li.remove();
             updateCounters(); // Обновляем счетчики после удаления задачи
         });
 
+        // Добавляем текст задачи и кнопки в li
+        li.appendChild(taskTextElement); // Добавляем текст
         li.appendChild(doneButton);
         li.appendChild(deleteButton);
         tasksToDoList.appendChild(li);
@@ -62,6 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function moveToDone(taskItem) {
         const doneTasksList = document.querySelector('.done-tasks-list');
+
+        taskItem.classList.add('done-task-item');
+
         doneTasksList.appendChild(taskItem);
 
         const buttons = taskItem.querySelectorAll('button');

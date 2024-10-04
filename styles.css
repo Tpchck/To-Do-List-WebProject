@@ -261,42 +261,51 @@ button:hover {
     margin: auto;
 }
 
+.header{
+    text-decoration: underline;
+}
+
 li {
-    display: flex; /* Используем flexbox для выравнивания */
-    align-items: center; /* Вертикальное выравнивание по центру */
-    position: relative; /* Позволяет кнопкам позиционироваться относительно родительского элемента */
+    display: flex; /* Используем flexbox */
+    align-items: center;
+    position: relative;
     font-family: 'Inter', sans-serif;
     color: white;
     padding: 10px;
     margin-bottom: 10px;
-    flex-wrap: wrap; /* Позволяет переносить текст на новую строку */
+    justify-content: space-between; /* Выравнивание элементов по краям */
 }
 
 .done-button, .delete-button {
-    width: 40px; /* Фиксированная ширина */
-    height: 40px; /* Фиксированная высота */
+    width: 40px;
+    height: 40px;
     border: none;
     border-radius: 10px;
-    background: transparent; /* Прозрачный фон */
+    background: transparent; /* Обновляем стиль для прозрачности */
     color: var(--pink-color);
-    cursor: pointer; /* Указываем, что кнопка кликабельная */
+    cursor: pointer;
+    display: flex;
+    align-items: center; /* Центрируем содержимое */
+    justify-content: center; /* Центрируем содержимое */
+    margin-left: 5px; /* Отступ между кнопками */
 }
 
 .done-button {
-    position: absolute; /* Фиксируем кнопку */
-    right: 50px; /* Располагаем кнопку справа с фиксированным отступом */
+    position: absolute;
+    right: 50px;
 }
 
 
 .delete-button {
-    position: absolute; /* Фиксируем кнопку */
-    right: 10px; /* Располагаем кнопку справа с фиксированным отступом */
+    position: absolute;
+    right: 10px;
 }
 
 .task-text {
-    flex-grow: 1; /* Позволяет тексту занимать всё доступное пространство */
-    overflow-wrap: break-word; /* Переносит длинные слова на новую строку */
-    margin-right: 20px; /* Отступ между текстом и кнопками */
+    flex-grow: 1; /* Позволяет тексту занимать доступное пространство */
+    overflow-wrap: break-word; /* Позволяет переносить длинные слова */
+    margin-right: 10px; /* Отступ между текстом и кнопками */
+    max-width: calc(100% - 90px); /* Устанавливаем максимальную ширину с учетом ширины кнопок */
 }
 
 .done-button svg, .delete-button svg {
@@ -305,6 +314,12 @@ li {
 }
 
 .button-container {
-    display: flex; /* Устанавливаем flexbox для кнопок */
-    gap: 10px; /* Отступ между кнопками */
+    display: flex;
+    gap: 10px;
 }
+
+.done-task-item{
+    color: var(--light-green-color);
+    text-decoration: line-through;
+}
+
