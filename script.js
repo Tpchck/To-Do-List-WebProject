@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </g>
     </svg>`;
 
+    loadTasksFromLocalStorage();
+
     form.addEventListener('submit', (event) => {
         event.preventDefault();
 
@@ -28,40 +30,47 @@ document.addEventListener('DOMContentLoaded', () => {
         if (taskText) {
             addTaskToDo(taskText);
             input.value = '';
-            updateCounters(); // Обновляем счетчики после добавления задачи
+            updateCounters();
+            saveTasksToLocalStorage();
         }
     });
 
-    function addTaskToDo(taskText) {
+    function addTaskToDo(taskText, isDone = false) {
         const li = document.createElement('li');
-
-        // Создайте элемент для текста задачи
         const taskTextElement = document.createElement('span');
         taskTextElement.textContent = taskText;
-        taskTextElement.classList.add('task-text'); // Добавляем класс для текстового элемента
+        taskTextElement.classList.add('task-text');
 
-        const doneButton = document.createElement('button');
-        doneButton.innerHTML = checkSVG;
-        doneButton.classList.add('done-button');
+        if (!isDone) {
+            // Если задача не завершена
+            const doneButton = document.createElement('button');
+            doneButton.innerHTML = checkSVG;
+            doneButton.classList.add('done-button');
 
-        doneButton.addEventListener('click', () => {
-            moveToDone(li);
-        });
+            doneButton.addEventListener('click', () => {
+                moveToDone(li);
+            });
 
-        const deleteButton = document.createElement('button');
-        deleteButton.innerHTML = trashSVG;
-        deleteButton.classList.add('delete-button');
+            const deleteButton = document.createElement('button');
+            deleteButton.innerHTML = trashSVG;
+            deleteButton.classList.add('delete-button');
 
-        deleteButton.addEventListener('click', () => {
-            li.remove();
-            updateCounters(); // Обновляем счетчики после удаления задачи
-        });
+            deleteButton.addEventListener('click', () => {
+                li.remove();
+                updateCounters();
+                saveTasksToLocalStorage(); // Сохраняем задачи в localStorage после удаления
+            });
 
-        // Добавляем текст задачи и кнопки в li
-        li.appendChild(taskTextElement); // Добавляем текст
-        li.appendChild(doneButton);
-        li.appendChild(deleteButton);
-        tasksToDoList.appendChild(li);
+            li.appendChild(taskTextElement);
+            li.appendChild(doneButton);
+            li.appendChild(deleteButton);
+            tasksToDoList.appendChild(li);
+        } else {
+            // Если задача завершена, добавляем её в список Done
+            li.classList.add('done-task-item');
+            li.appendChild(taskTextElement);
+            doneTasksList.appendChild(li);
+        }
     }
 
     function moveToDone(taskItem) {
@@ -73,7 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const buttons = taskItem.querySelectorAll('button');
         buttons.forEach(button => button.remove());
-        updateCounters(); // Обновляем счетчики после перемещения задачи
+        updateCounters();
+        saveTasksToLocalStorage();
     }
 
     function updateCounters() {
@@ -84,6 +94,34 @@ document.addEventListener('DOMContentLoaded', () => {
         doneTasksCount.textContent = doneTasksCountValue > 0 ? doneTasksCountValue : 'none';
     }
 
-    // Инициализация счетчиков при загрузке
-    updateCounters();
-});
+    function saveTasksToLocalStorage() {
+        const tasksToDo = Array.from(tasksToDoList.children).map(task => ({
+            text: task.querySelector('.task-text').textContent,
+            done: false
+        }));
+
+        const doneTasks = Array.from(doneTasksList.children).map(task => ({
+            text: task.querySelector('.task-text').textContent,
+            done: true
+        }));
+
+        const tasks = tasksToDo.concat(doneTasks);
+
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Функция загрузки задач из localStorage
+    function loadTasksFromLocalStorage() {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || []; // Загружаем задачи или создаем пустой массив
+
+        tasks.forEach(task => {
+            // Проверяем, завершена задача или нет
+            if (task.done) {
+                addTaskToDo(task.text, true); // Передаем true для задач, которые уже завершены
+            } else {
+                addTaskToDo(task.text, false); // Передаем false для незавершенных задач
+            }
+        });
+
+        updateCounters(); // Обновляем счетчики задач
+    }});
